@@ -16,14 +16,14 @@ let sequence = [],
 let roundNumber = 1,
   patternLength = 2;
 
-let sequenceTimer = 10; // 600;
-let maxSequenceTimer = 10; // 600;
+let sequenceTimer = 10;
+let maxSequenceTimer = 10;
 
 let spots = [
   { id: 1, x: -70, y: 125, key: "a" },
   { id: 2, x: 30, y: 125, key: "d" },
-  { id: 3, x: -70, y: 250, key: "q" },
-  { id: 4, x: 30, y: 250, key: "e" },
+  { id: 3, x: -70, y: 250, key: "w" },
+  { id: 4, x: 30, y: 250, key: "s" },
 ];
 
 let redStrikes = 0,
@@ -93,16 +93,6 @@ function draw() {
       textSize(20);
       textAlign(CENTER, CENTER);
 
-      // old display
-      //       let displayNumber = "";
-      //       for(let i=0;i<sequence.length;i++){
-      //         displayNumber += sequence[i];
-      //         if(i < sequence.length-1) displayNumber += " → ";
-      //       }
-
-      //       text(displayNumber,225,35);
-
-      //new display
       let startX = 225 - (sequence.length - 1) * 22;
 
       for (let i = 0; i < sequence.length; i++) {
@@ -126,21 +116,17 @@ function draw() {
       text("Round: " + roundNumber, 5, 35);
 
       textAlign(RIGHT);
-      // text("Time: "+ceil(sequenceTimer/60),80,80);
       text("Time: " + ceil(sequenceTimer), 80, 80);
 
-      // let timerSpeed = 1 + (roundNumber-1)*0.10;
-      // sequenceTimer -= timerSpeed / 60;
       sequenceTimer -= 1 / 60;
 
       if (sequenceTimer <= 0) {
         redStrikes++;
         sequenceIndex = 0;
         sequenceCorrect = [];
-        // sequenceTimer = maxSequenceTimer;
+
         sequenceTimer = getRoundTimer();
-        // feedbackColor = color(255,0,0);
-        // feedbackTimer = 10;
+
         dongSFX.stop();
         dongSFX.play();
 
@@ -165,10 +151,8 @@ function draw() {
       //Number & Color Indicator
       for (let i = 0; i < spots.length; i++) {
         if (spots[i].id === sequence[sequenceIndex] && roundNumber <= 4) {
-          // fill(feedbackTimer > 0 ? feedbackColor : color(255, 255, 0));
           fill(255, 255, 0);
         } else {
-          // fill(feedbackTimer > 0 ? feedbackColor : color(200));
           fill(200);
         }
 
@@ -189,6 +173,7 @@ function draw() {
       // GUARD
       let leftGloveX = playerX - 10;
       let rightGloveX = playerX + 90;
+
       if (keyIsDown(DOWN_ARROW)) {
         leftGloveX = lerp(playerX - 10, playerX + 25, 0.2);
         rightGloveX = lerp(playerX + 90, playerX + 55, 0.2);
@@ -202,26 +187,28 @@ function draw() {
         playerX + 15,
         500 + playerYOffset,
         playerX - 10,
-        470 + playerYOffset,
+        470 + playerYOffset
       );
+
       line(
         playerX - 10,
         470 + playerYOffset,
         playerX - 10,
-        leftGloveY + playerYOffset,
+        leftGloveY + playerYOffset
       );
 
       line(
         playerX + 65,
         500 + playerYOffset,
         playerX + 90,
-        470 + playerYOffset,
+        470 + playerYOffset
       );
+
       line(
         playerX + 90,
         470 + playerYOffset,
         playerX + 90,
-        rightGloveY + playerYOffset,
+        rightGloveY + playerYOffset
       );
 
       // PLAYER
@@ -282,10 +269,10 @@ function draw() {
 
 function checkInputs() {
   // LEFT GLOVE
-  if (keyIsDown(81)) {
+  if (keyIsDown(87)) { // W
     leftGloveY = lerp(leftGloveY, 180, 0.3);
     bagAngle = -5;
-  } else if (keyIsDown(65)) {
+  } else if (keyIsDown(65)) { // A
     leftGloveY = lerp(leftGloveY, 310, 0.3);
     bagAngle = -5;
   } else {
@@ -293,10 +280,10 @@ function checkInputs() {
   }
 
   // RIGHT GLOVE
-  if (keyIsDown(69)) {
+  if (keyIsDown(83)) { // S
     rightGloveY = lerp(rightGloveY, 180, 0.3);
     bagAngle = 5;
-  } else if (keyIsDown(68)) {
+  } else if (keyIsDown(68)) { // D
     rightGloveY = lerp(rightGloveY, 310, 0.3);
     bagAngle = 5;
   } else {
@@ -330,7 +317,6 @@ function keyPressed() {
     redStrikes = 0;
     roundNumber = 1;
     sequenceIndex = 0;
-    // sequenceTimer = maxSequenceTimer;
     sequenceTimer = getRoundTimer();
     newPattern();
     switchState = 1;
@@ -340,38 +326,36 @@ function keyPressed() {
     let currentTarget = sequence[sequenceIndex];
     let correctKey = "";
 
-    if (currentTarget === 1) correctKey = "q";
-    if (currentTarget === 2) correctKey = "e";
+    if (currentTarget === 1) correctKey = "w";
+    if (currentTarget === 2) correctKey = "s";
     if (currentTarget === 3) correctKey = "a";
     if (currentTarget === 4) correctKey = "d";
 
     // CORRECT
     if (key === correctKey) {
       punchSFX.play();
-      // sequenceIndex++;
-      // feedbackColor = color(0,255,0);
-      // feedbackTimer = 10;
+
       sequenceCorrect[sequenceIndex] = true;
       sequenceIndex++;
 
       if (sequenceIndex >= sequence.length) {
         roundNumber++;
-        // sequenceTimer = maxSequenceTimer;
         sequenceTimer = getRoundTimer();
         newPattern();
       }
 
-      // WRONG
-    } else if (key === "q" || key === "e" || key === "a" || key === "d") {
+    // WRONG
+    } else if (
+      key === "w" ||
+      key === "s" ||
+      key === "a" ||
+      key === "d"
+    ) {
       errorSFX.play();
       redStrikes++;
       sequenceIndex = 0;
       sequenceCorrect = [];
-      // sequenceTimer = maxSequenceTimer;
       sequenceTimer = getRoundTimer();
-
-      // feedbackColor = color(255,0,0);
-      // feedbackTimer = 10;
     }
   }
 }
@@ -399,24 +383,24 @@ function newPattern() {
   sequenceCorrect = [];
 }
 
-function getRoundTimer(){
-  
-  if(roundNumber <= 4){
+function getRoundTimer() {
+
+  if (roundNumber <= 4) {
     return 10;
-    
-  } else if(roundNumber <= 6){
+
+  } else if (roundNumber <= 6) {
     return 9;
-    
-  } else if(roundNumber <= 8){
+
+  } else if (roundNumber <= 8) {
     return 8;
-    
-  } else if(roundNumber <= 10){
+
+  } else if (roundNumber <= 10) {
     return 7;
-    
-  } else if(roundNumber <= 12){
+
+  } else if (roundNumber <= 12) {
     return 6;
 
-  } else if(roundNumber <= 14){
+  } else if (roundNumber <= 14) {
     return 5;
 
   } else {

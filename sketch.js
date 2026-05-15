@@ -8,7 +8,7 @@ let leftGloveY = 370,
 
 let gloveResetY = 470;
 let bagAngle = 0;
-let switchState = 0;
+let switchState = 0;//
 
 let sequence = [],
   sequenceIndex = 0,
